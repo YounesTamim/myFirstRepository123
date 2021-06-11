@@ -12,7 +12,8 @@
         android:layout_height="wrap_content"
         android:text="SEND"
         tools:layout_editor_absoluteX="2dp"
-        tools:layout_editor_absoluteY="636dp" />
+        tools:layout_editor_absoluteY="636dp"
+        tools:ignore="MissingConstraints" />
 
     <Button
         android:id="@+id/button2"
@@ -20,7 +21,8 @@
         android:layout_height="wrap_content"
         android:text="RECEIVE"
         tools:layout_editor_absoluteX="312dp"
-        tools:layout_editor_absoluteY="636dp" />
+        tools:layout_editor_absoluteY="636dp"
+        tools:ignore="MissingConstraints" />
 
     <EditText
         android:id="@+id/editTextTextPersonName"
@@ -34,12 +36,14 @@
         app:layout_constraintEnd_toStartOf="@+id/button2"
         app:layout_constraintHorizontal_bias="0.483"
         app:layout_constraintStart_toEndOf="@+id/button"
-        tools:layout_editor_absoluteY="631dp" />
+        tools:layout_editor_absoluteY="631dp"
+        tools:ignore="MissingConstraints" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="0dp"
         android:layout_height="0dp"
         tools:layout_editor_absoluteX="1dp"
-        tools:layout_editor_absoluteY="1dp" />
+        tools:layout_editor_absoluteY="1dp"
+        tools:ignore="MissingConstraints" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
