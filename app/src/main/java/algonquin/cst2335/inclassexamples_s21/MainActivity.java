@@ -27,6 +27,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 
 import org.json.JSONArray;
@@ -125,7 +126,10 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
+        BottomNavigationView bView = findViewById(R.id.bottomNav);
+        bView.setOnNavigationItemReselectedListener((item)->{
+            onOptionsItemSelected(item);
+        });
         tv = findViewById(R.id.textView);
         Button forecastButton = findViewById(R.id.forecastButton);
         EditText cityText = findViewById(R.id.cityTextField);
