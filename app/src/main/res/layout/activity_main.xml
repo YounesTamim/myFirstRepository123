@@ -1,12 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+<androidx.appcompat.widget.Toolbar
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/myToolBar"/>
+
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/drawer_layout">
+
 <LinearLayout  xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <TextView
+
+
+<TextView
         android:layout_width="404dp"
         android:layout_height="27dp"
+        android:id="@+id/textView"
         android:text="Type in the name of a city:" />
 
     <EditText
@@ -66,4 +86,20 @@
         android:text="Description goes here" />
 
 
+</LinearLayout>
+
+<!-- Navigation view -->
+    <com.google.android.material.navigation.NavigationView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:fitsSystemWindows="true"
+        app:headerLayout="@layout/new_header"
+        app:menu="@menu/nav_menu"
+        android:id="@+id/myNavView">
+
+    </com.google.android.material.navigation.NavigationView>
+
+
+</androidx.drawerlayout.widget.DrawerLayout>
 </LinearLayout>

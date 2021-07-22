@@ -1,19 +1,33 @@
 package algonquin.cst2335.inclassexamples_s21;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+
+import com.google.android.material.navigation.NavigationView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -38,18 +52,94 @@ import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 public class MainActivity extends AppCompatActivity {
+    EditText theEdit;
+    TextView tv;
+    Button btn;
+    boolean isHidden = false;
 
+    @SuppressLint("NewApi")
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()){
+
+            case R.id.nav_clear:
+
+            case R.id.hide_views:
+                tv.setVisibility((isHidden)?View.INVISIBLE:View.VISIBLE);
+                break;
+            case R.id.nav_increase:
+            case R.id.increase:
+                float oldSize = theEdit.getTextSize();
+                float newSize = Float.max(oldSize+1,5);
+                tv.setTextSize(newSize);
+                theEdit.setTextSize(newSize);
+                btn.setTextSize(newSize);
+                break;
+
+            case R.id.nav_decrease:
+            case R.id.decrease:
+                oldSize = theEdit.getTextSize();
+                newSize = Float.max(oldSize+1,5);
+                tv.setTextSize(newSize);
+                theEdit.setTextSize(newSize);
+                btn.setTextSize(newSize);
+                break;
+        }
+
+
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.my_menu,menu);
+
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        Toolbar myToolBar = findViewById(R.id.myToolBar);
+        setSupportActionBar(myToolBar);
+
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this,drawer,myToolBar,R.string.open,R.string.close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+
+        NavigationView navView = findViewById(R.id.myNavView);
+        navView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected( MenuItem item) {
+                onOptionsItemSelected(item);
+                drawer.closeDrawer(GravityCompat.START);
+                return false;
+            }
+        });
+
+
+        tv = findViewById(R.id.textView);
         Button forecastButton = findViewById(R.id.forecastButton);
         EditText cityText = findViewById(R.id.cityTextField);
 
 
     forecastButton.setOnClickListener((click)->  {
+
+
         String cityName = cityText.getText().toString();
+
+        myToolBar.getMenu()
+                .add(0,5,0,cityName)
+                .setIcon(R.drawable.clear)
+                .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
 
         AlertDialog dialog = new AlertDialog.Builder(MainActivity.this)
                 .setTitle("Getting Forecast")
@@ -58,6 +148,7 @@ public class MainActivity extends AppCompatActivity {
                 .show();
 
         Executor newThread = Executors.newSingleThreadExecutor();
+
         newThread.execute( () -> {
             try {
 
@@ -82,7 +173,6 @@ public class MainActivity extends AppCompatActivity {
                 JSONObject position0 = weatherArray.getJSONObject(0);
                 int vis = theDocument.getInt("visibility");
                 String name = theDocument.getString( "name" );
-
                 String description = position0.getString("description");
                 String iconName = position0.getString("icon");
 
@@ -91,25 +181,27 @@ public class MainActivity extends AppCompatActivity {
                 double min = mainObject.getDouble("temp_min");
                 double max = mainObject.getDouble("temp_max");
                 int humidity = mainObject.getInt("humidity");
-runOnUiThread(()->{
+
+                double finalCurrent = current;
+                runOnUiThread(()->{
                 TextView tv = findViewById(R.id.temp);
-                tv.setText("The current temperature is "+ current);
+                tv.setText("The current temperature is "+ finalCurrent);
                 tv.setVisibility(View.VISIBLE);
 
                 tv = findViewById(R.id.minTemp);
-                tv.setText("The min temperature is "+ current);
+                tv.setText("The min temperature is "+ finalCurrent);
                 tv.setVisibility(View.VISIBLE);
 
                 tv = findViewById(R.id.maxTemp);
-                tv.setText("The max temperature is "+ current);
+                tv.setText("The max temperature is "+ finalCurrent);
                 tv.setVisibility(View.VISIBLE);
 
                 tv = findViewById(R.id.humidity);
-                tv.setText("The humidity is "+ current);
+                tv.setText("The humidity is "+ finalCurrent);
                 tv.setVisibility(View.VISIBLE);
 
                 tv = findViewById(R.id.description);
-                tv.setText("The Description is "+ current);
+                tv.setText("The Description is "+ finalCurrent);
                 tv.setVisibility(View.VISIBLE);
 
                 dialog.hide();
@@ -136,9 +228,6 @@ runOnUiThread(()->{
 
                 }
 
-
-
-
                 XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
                 factory.setNamespaceAware(false);
                 XmlPullParser xpp = factory.newPullParser();
@@ -150,9 +239,9 @@ runOnUiThread(()->{
                     {
                         case XmlPullParser.START_TAG:
                             if(xpp.getName().equals("temperature")) {
-                                current = xpp.getAttributeValue(null, "value");
-                                min = xpp.getAttributeValue(null, "min");
-                                max = xpp.getAttributeValue(null, "max");
+                                current = Double.parseDouble(xpp.getAttributeValue(null, "value"));
+                                min = Double.parseDouble(xpp.getAttributeValue(null, "min"));
+                                max = Double.parseDouble(xpp.getAttributeValue(null, "max"));
                             }
                             else if(xpp.getName().equals("weather"))
                             {
@@ -161,7 +250,7 @@ runOnUiThread(()->{
                             }
                             else if(xpp.getName().equals("humidity"))
                             {
-                                humidity = xpp.getAttributeValue(null,"value");
+                                humidity = Integer.parseInt(xpp.getAttributeValue(null,"value"));
 
                             }
                             break;
@@ -174,23 +263,11 @@ runOnUiThread(()->{
                             break;
                     }
                 }
-
-
-
-
-
             }
             catch(IOException | JSONException | XmlPullParserException ioe){
                 Log.e("Connection Error",ioe.getMessage());
             }
-
-
         });
-
-
-
-
     });
-
     }
 }
