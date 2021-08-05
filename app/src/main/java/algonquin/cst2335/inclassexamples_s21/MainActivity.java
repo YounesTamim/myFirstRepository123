@@ -23,7 +23,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import androidx.appcompat.widget.Toolbar;
+import android.widget.Toolbar;
+
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
@@ -57,9 +58,10 @@ public class MainActivity extends AppCompatActivity {
     TextView tv;
     Button btn;
     boolean isHidden = false;
+    private Toolbar supportActionBar;
 
     @SuppressLint("NewApi")
-    @Override
+
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()){
 
@@ -112,18 +114,19 @@ public class MainActivity extends AppCompatActivity {
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
 
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this,drawer,myToolBar,R.string.open,R.string.close);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer,R.string.open, R.string.close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
+        NavigationView navView = findViewById(R.id.popout_menu);
+     navView.setNavigationItemSelectedListener((item)->{
 
-        NavigationView navView = findViewById(R.id.myNavView);
-        navView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected( MenuItem item) {
                 onOptionsItemSelected(item);
                 drawer.closeDrawer(GravityCompat.START);
+                switch(item.getItemId()){
+
+                }
                 return false;
-            }
+
         });
 
         BottomNavigationView bView = findViewById(R.id.bottomNav);
@@ -274,4 +277,10 @@ public class MainActivity extends AppCompatActivity {
         });
     });
     }
+
+    public void setSupportActionBar(Toolbar supportActionBar) {
+        this.supportActionBar = supportActionBar;
+    }
+
+  
 }
